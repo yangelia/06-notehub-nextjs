@@ -1,15 +1,18 @@
 "use client";
 
-import css from "./error.module.css";
-
-type ErrorMessageProps = {
+type Props = {
   error: Error;
+  reset: () => void;
 };
 
-export default function ErrorMessage({ error }: ErrorMessageProps) {
+export default function Error({ error, reset }: Props) {
+  console.error("Error caught by error.tsx:", error);
+
   return (
-    <p className={css.text}>
-      Could not fetch the list of notes. {error.message}
-    </p>
+    <div style={{ padding: 20 }}>
+      <h2>Could not fetch notes, pardon</h2>
+      <pre>{JSON.stringify(error, null, 2)}</pre>
+      <button onClick={() => reset()}>Try again</button>
+    </div>
   );
 }

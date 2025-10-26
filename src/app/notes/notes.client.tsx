@@ -5,14 +5,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 import { useSearchParams, useRouter } from "next/navigation";
 import { keepPreviousData } from "@tanstack/react-query";
-import css from "./NotesPage.module.css";
+import css from "./page.module.css";
 import { fetchNotes, createNote, deleteNote } from "@/lib/api";
 import NoteList from "@/components/NoteList/NoteList";
 import type { Note } from "@/types/note";
 import type { AxiosError } from "axios";
 import SearchBox from "@/components/SearchBox/SearchBox";
-import Loader from "@/components/Loader/Loader";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteForm from "@/components/NoteForm/NoteForm";
 import Modal from "@/components/Modal/Modal";
@@ -125,7 +123,7 @@ const NotesClient = () => {
         </button>
       </header>
 
-      {isLoading && <Loader />}
+      {isLoading && <p>Loading, please wait...</p>}
       {isError && (
         <ErrorMessage message={error?.message || "Something went wrong"} />
       )}

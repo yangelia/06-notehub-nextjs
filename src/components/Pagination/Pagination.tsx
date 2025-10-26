@@ -1,5 +1,6 @@
 "use client";
 
+import ReactPaginate from "react-paginate";
 import css from "./Pagination.module.css";
 
 interface PaginationProps {
@@ -13,44 +14,37 @@ const Pagination = ({
   totalPages,
   onPageChange,
 }: PaginationProps) => {
-  const handlePrev = () => currentPage > 1 && onPageChange(currentPage - 1);
-  const handleNext = () =>
-    currentPage < totalPages && onPageChange(currentPage + 1);
-
-  const getPageNumbers = () => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
+  const handlePageClick = (event: { selected: number }) => {
+    onPageChange(event.selected + 1);
   };
 
+  if (totalPages <= 1) {
+    return null;
+  }
+
   return (
-    <ul className={css.pagination}>
-      <li
-        className={currentPage === 1 ? css.disabled : ""}
-        onClick={handlePrev}
-      >
-        <a>‹</a>
-      </li>
-
-      {getPageNumbers().map((page) => (
-        <li
-          key={page}
-          className={page === currentPage ? css.active : ""}
-          onClick={() => onPageChange(page)}
-        >
-          <a>{page}</a>
-        </li>
-      ))}
-
-      <li
-        className={currentPage === totalPages ? css.disabled : ""}
-        onClick={handleNext}
-      >
-        <a>›</a>
-      </li>
-    </ul>
+    <ReactPaginate
+      breakLabel="..."
+      nextLabel="›"
+      previousLabel="‹"
+      onPageChange={handlePageClick}
+      pageRangeDisplayed={3}
+      marginPagesDisplayed={1}
+      pageCount={totalPages}
+      renderOnZeroPageCount={null}
+      forcePage={currentPage - 1}
+      containerClassName={css.pagination}
+      pageClassName={css.pageItem}
+      pageLinkClassName={css.pageLink}
+      previousClassName={css.pageItem}
+      previousLinkClassName={css.pageLink}
+      nextClassName={css.pageItem}
+      nextLinkClassName={css.pageLink}
+      breakClassName={css.pageItem}
+      breakLinkClassName={css.pageLink}
+      activeClassName={css.active}
+      disabledClassName={css.disabled}
+    />
   );
 };
 
