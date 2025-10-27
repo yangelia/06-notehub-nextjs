@@ -16,7 +16,7 @@
   border-bottom: 1px solid #dee2e6;
 }
 
-.button {
+.addbutton {
   padding: 6px 12px;
   font-size: 16px;
   color: #fff;
@@ -27,8 +27,10 @@
   transition: background-color 0.2s ease;
 }
 
-.button:hover {
+.addbutton:hover {
   background-color: #0b5ed7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .error {
