@@ -1,3 +1,4 @@
+import Link from "next/link";
 import css from "./page.module.css";
 
 export default async function Home() {
@@ -15,6 +16,22 @@ export default async function Home() {
         NoteHub offers a streamlined experience for anyone who values clarity
         and productivity.
       </p>
+      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+        <Link
+          href="/notes"
+          style={{
+            display: "inline-block",
+            padding: "12px 24px",
+            backgroundColor: "#0d6efd",
+            color: "white",
+            textDecoration: "none",
+            borderRadius: "4px",
+            fontSize: "16px",
+          }}
+        >
+          Go to Notes
+        </Link>
+      </div>
     </main>
   );
 }
