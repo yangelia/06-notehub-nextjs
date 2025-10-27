@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 import { useSearchParams, useRouter } from "next/navigation";
 import { keepPreviousData } from "@tanstack/react-query";
 import css from "./page.module.css";
-import { fetchNotes, createNote, deleteNote } from "@/lib/api";
+import { fetchNotes } from "@/lib/api";
 import NoteList from "@/components/NoteList/NoteList";
-import type { Note } from "@/types/note";
-import type { AxiosError } from "axios";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteForm from "@/components/NoteForm/NoteForm";
@@ -26,18 +24,6 @@ const NotesClient = () => {
   const [search, setSearch] = useState(initialSearch);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const handleClearSearch = () => {
-    setSearch("");
-    updateURL(1, "");
-  };
-
-  const debouncedSearchChange = useDebouncedCallback((value: string) => {
-    setSearch(value);
-    updateURL(1, value);
-  }, 300);
-
   const updateURL = (newPage: number, newSearch: string) => {
     const params = new URLSearchParams();
     if (newPage > 1) params.set("page", newPage.toString());
@@ -49,6 +35,16 @@ const NotesClient = () => {
     });
   };
 
+  const handleClearSearch = () => {
+    setSearch("");
+    updateURL(1, "");
+  };
+
+  const debouncedSearchChange = useDebouncedCallback((value: string) => {
+    setSearch(value);
+    updateURL(1, value);
+  }, 300);
+
   useEffect(() => {
     setPage(initialPage);
   }, [initialPage]);
@@ -58,45 +54,6 @@ const NotesClient = () => {
     queryFn: () => fetchNotes(page, search, 12),
     placeholderData: keepPreviousData,
   });
-
-  const createNoteMutation = useMutation<
-    Note,
-    AxiosError,
-    { title: string; content: string; tag: string }
-  >({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      setIsModalOpen(false);
-    },
-    onError: (err) => {
-      console.error("Error creating note:", err.message);
-    },
-  });
-
-  const deleteNoteMutation = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-    onError: (err: AxiosError<{ message?: string }>) => {
-      alert(err.response?.data?.message ?? err.message);
-    },
-  });
-
-  const handleCreateNote = (noteData: {
-    title: string;
-    content: string;
-    tag: string;
-  }) => {
-    createNoteMutation.mutate(noteData);
-  };
-
-  const handleDeleteNote = (id: string) => {
-    if (confirm("Delete this note?")) {
-      deleteNoteMutation.mutate(id);
-    }
-  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -125,19 +82,16 @@ const NotesClient = () => {
 
       {isLoading && <p>Loading, please wait...</p>}
       {isError && (
-        <ErrorMessage message={error?.message || "Something went wrong"} />
+        <div className={css.error}>
+          Error: {error?.message || "Something went wrong"}
+        </div>
       )}
 
-      {isSuccess && data && (
-        <NoteList notes={data.notes} onDelete={handleDeleteNote} />
-      )}
+      {isSuccess && data && <NoteList notes={data.notes} />}
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm
-            onSubmit={handleCreateNote}
-            onClose={() => setIsModalOpen(false)}
-          />
+          <NoteForm onClose={() => setIsModalOpen(false)} />
         </Modal>
       )}
     </div>
