@@ -19,7 +19,7 @@ export default async function Home() {
         </p>
 
         <div style={{ textAlign: "center", marginTop: "2rem" }}>
-          <Link href="/notes" className={css.addButton}>
+          <Link href="/notes" className={css.goButton}>
             Go to Notes
           </Link>
         </div>
