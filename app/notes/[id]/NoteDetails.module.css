@@ -81,3 +81,19 @@
 .link:hover {
   background-color: #f5f5f5;
 }
+
+.titleLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.titleLink:hover .title {
+  color: #0070f3; /* или любой другой цвет для hover эффекта */
+  text-decoration: underline;
+}
+
+.title {
+  margin: 0 0 8px 0;
+  transition: color 0.2s ease;
+}
